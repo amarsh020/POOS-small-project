@@ -1,9 +1,149 @@
 <!DOCTYPE html>
-<html>
-	<body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space-Themed Index</title>
+    <link href="https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap" rel="stylesheet">
+    <style>
+      /* background and body styling */
+      body {
+        background-image: url('images/background.png'); 
+        background-size: cover;
+        background-position: center;
+        color: white;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
 
-	<h1>Welcome to our Website</h1>
-	<button onclick="location.href = 'login/login.html';" class ="btn">Click here to login or sign up</button>
+      /* header styling */
+      header {
+        font-family: 'Zen Dots', cursive;
+        font-size: 2.3rem;
+        text-shadow: 0 0 10px cyan, 0 0 20px lightblue;
+      }
 
-	</body>
+      /* logo styling */
+      #logo {
+        width: 120px;
+        margin: 10px auto;
+        display: block;
+      }
+
+      /* login/signup box styling */
+      .login-box {
+        background-color: rgba(0, 0, 50, 0.8);
+        padding: 10px;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        display: inline-block;
+        margin: 30px auto;
+        width: 300px;
+      }
+
+      .login-box input {
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        width: 80%;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+      }
+
+      .login-box button {
+        background-color: #ff1ea2;
+        color: black;
+        font-size: 1rem;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s, background-color 0.3s;
+      }
+
+      .login-box button:hover {
+        background-color: lightblue;
+        transform: scale(1.1);
+      }
+
+      /* toggle links styling */
+      .toggle-link {
+        color: cyan;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .toggle-link:hover {
+        text-decoration: underline;
+      }
+
+      /* hide elements */
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="index.html">
+      <img id="logo" src="images/icon.png" alt="logo image">
+    </a>
+    <header>WELCOME</header>
+
+    <!-- login/signup container -->
+    <div class="login-box">
+      <!-- login form -->
+      <div id="login-form">
+        <h2>Log In</h2>
+        <form method="post">
+          <label for="username">Username</label>
+          <input type="text" id="loginName" name="username" placeholder="Username" required="required">
+
+          <label for="password">Password</label>
+          <input type="password" id="loginPassword" name="password" placeholder="Password" required="required">
+
+          <button type="button" onclick="doLogin()">Log In</button>
+        </form>
+        <p>Don't have an account? <span class="toggle-link" onclick="toggleForms('signup')">Sign Up</span></p>
+      </div>
+
+      <!-- signup form -->
+      <div id="signup-form" class="hidden">
+        <h2>Sign Up</h2>
+        <form method="post">
+          <label for="firstname">First Name</label>
+          <input type="text" id="firstname" name="firstname" placeholder="First Name" required="required">
+
+          <label for="lastname">Last Name</label>
+          <input type="text" id="lastname" name="lastname" placeholder="Last Name" required="required">
+
+          <label for="username">Username</label>
+          <input type="text" id="signupUsername" name="username" placeholder="Username" required="required">
+
+          <label for="password">Password</label>
+          <input type="password" id="signupPassword" name="password" placeholder="Password" required="required">
+
+          <button type="button" onclick="doSignup()">Sign Up</button>
+        </form>
+        <p>Already have an account? <span class="toggle-link" onclick="toggleForms('login')">Log In</span></p>
+      </div>
+    </div>
+
+    <script>
+      // JavaScript to toggle between login and signup forms
+      function toggleForms(form) {
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
+
+        if (form === 'signup') {
+          loginForm.classList.add('hidden'); // hide login form
+          signupForm.classList.remove('hidden'); // show signup form
+        } else {
+          signupForm.classList.add('hidden'); // hide signup form
+          loginForm.classList.remove('hidden'); // show login form
+        }
+      }
+    </script>
+  </body>
 </html>
