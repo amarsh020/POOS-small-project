@@ -9,64 +9,64 @@ const ids = [];
 function doLogin() {
 
 	userId = 0;
-    firstName = "";
-    lastName = "";
+	firstName = "";
+	lastName = "";
 
-    let login = document.getElementById("loginName").value;
-    let password = document.getElementById("loginPassword").value;
+	let login = document.getElementById("loginName").value;
+	let password = document.getElementById("loginPassword").value;
 
-    var hash = md5(password);
+	var hash = md5(password);
 
-    if (validLoginForm(login, password) == false) {
+	if (validLoginForm(login, password) == false) {
 
-        document.getElementById("loginResult").innerHTML = "invalid username or password";
-        return;
+		document.getElementById("loginResult").innerHTML = "invalid username or password";
+		return;
     }
 
-    document.getElementById("loginResult").innerHTML = "";
+	document.getElementById("loginResult").innerHTML = "";
 
-    let tmp = {
-        login: login,
-        password: hash
-    };
+	let tmp = {
+		login: login,
+		password: hash
+	};
 
-    let jsonPayload = JSON.stringify(tmp);
+	let jsonPayload = JSON.stringify(tmp);
 
-    let url = urlBase + '/Login.' + extension;
+	let url = '/LAMPAPI/Login.' + extension;
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-    try {
+	try {
 
-        xhr.onreadystatechange = function () {
+		xhr.onreadystatechange = function () {
 
-            if (this.readyState == 4 && this.status == 200) {
+			if (this.readyState == 4 && this.status == 200) {
 
-                let jsonObject = JSON.parse(xhr.responseText);
-                userId = jsonObject.id;
+				let jsonObject = JSON.parse(xhr.responseText);
+				userId = jsonObject.id;
 
-                if (userId < 1) {
+				if (userId < 1) {
 
-                    document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-                    return;
-                }
+					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+					return;
+				}
 
-                firstName = jsonObject.firstName;
-                lastName = jsonObject.lastName;
+				firstName = jsonObject.firstName;
+				lastName = jsonObject.lastName;
 
-                saveCookie();
-                window.location.href = "contacts.html";
-            }
-        };
+				saveCookie();
+				window.location.href = "contacts.html";
+			}
+		};
 
-        xhr.send(jsonPayload);
+		xhr.send(jsonPayload);
 
-    } catch (err) {
+	} catch (err) {
 
-        document.getElementById("loginResult").innerHTML = err.message;
-    }
+		document.getElementById("loginResult").innerHTML = err.message;
+	}
 }
 
 function doSignUp() {
