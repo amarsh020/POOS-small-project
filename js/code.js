@@ -1,4 +1,4 @@
-const urlBase = 'http://contactsclassproject.xyz/LAMPAPI";
+const urlBase = 'http://contactsclassproject.xyz/LAMPAPI';
 const extension = 'php';
 
 let userId = '0';
@@ -20,62 +20,66 @@ const ids = [];
 function doSignUp() {
 
 	fName = document.getElementById("firstName").value;
-    	lName = document.getElementById("lastName").value;
-    	let uName = document.getElementById("username").value;
-    	let pswd = document.getElementById("password").value;
+    lName = document.getElementById("lastName").value;
+    let uName = document.getElementById("username").value;
+    let pswd = document.getElementById("password").value;
 
-    	if (validSignUpForm(fName, lName, uName, pswd) ==  false) {
-        	document.getElementById("signupResult").innerHTML = "Sign up invalid";
-        	return;
-    	}
+	if (validSignUp(fName, lName, uName, pswd) ==  false) {
+		document.getElementById("signupResult").innerHTML = "Sign up invalid";
+		return;
+	}
 
-    	var hash = md5(password);
+	var hash = md5(password);
 
-    	document.getElementById("signUpResult").innerHTML = "";
+	document.getElementById("signUpResult").innerHTML = "";
 
 	let tmp = {
-        	firstName: firstName,
-        	lastName: lastName,
-        	login: username,
-        	password: hash
-    	};
+		fName: fName,
+		lName: lName,
+		uName: uName,
+		pswd: hash
+	};
 
-    	let jsonPayload = JSON.stringify(tmp);
+	let jsonPayload = JSON.stringify(tmp);
 
-    	let url = urlBase + '/SignUp.' + extension;
+	let url = urlBase + '/SignUp.' + extension;
 
-    	let xhr = new XMLHttpRequest();
-    	xhr.open("POST", url, true);
-    	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	let xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-    	try {
-        	xhr.onreadystatechange = function () {
+	try {
 
-            	if (this.readyState != 4) {
-                	return;
-            	}
+		xhr.onreadystatechange = function () {
 
-            	if (this.status == 409) {
-                	document.getElementById("signupResult").innerHTML = "User already exists";
-                	return;
-            	}
+			if (this.readyState != 4) {
+				return;
+			}
 
-            	if (this.status == 200) {
+			if (this.status == 409) {
+				document.getElementById("signupResult").innerHTML = "User already exists";
+				return;
+			}
 
-                	let jsonObject = JSON.parse(xhr.responseText);
-                	userId = jsonObject.id;
-                	document.getElementById("signupResult").innerHTML = "User added";
-                	firstName = jsonObject.firstName;
-                	lastName = jsonObject.lastName;
-                	saveCookie();
-            	}
-        };
+			if (this.status == 200) {
 
-        xhr.send(jsonPayload);
+				let jsonObject = JSON.parse(xhr.responseText);
+				userId = jsonObject.id;
 
-    	} catch (err) {
-        	document.getElementById("signupResult").innerHTML = err.message;
-    	}
+				document.getElementById("signupResult").innerHTML = "User added";
+
+				fName = jsonObject.firstName;
+				lName = jsonObject.lastName;
+
+				saveCookie();
+			}
+		};
+
+		xhr.send(jsonPayload);
+
+	} catch (err) {
+		document.getElementById("signupResult").innerHTML = err.message;
+	}
 
 }
 
@@ -100,21 +104,21 @@ function readCookie() {
 		let thisOne = splits[i].trim();
 		let tokens = thisOne.split("=");
 
-		if( tokens[0] == "firstName" ) {
+		if(tokens[0] == "firstName") {
 
 			firstName = tokens[1];
 
-		} else if( tokens[0] == "lastName" ) {
+		} else if(tokens[0] == "lastName") {
 
 			lastName = tokens[1];
 
-		} else if( tokens[0] == "userId" ) {
+		} else if(tokens[0] == "userId") {
 
 			userId = parseInt(tokens[1].trim());
 		}
 	}
 	
-	if( userId < 0 ) {
+	if(userId < 0) {
 
 		window.location.href = "index.html";
 
@@ -124,124 +128,124 @@ function readCookie() {
 	}
 }
 
-function validLoginForm(logName, logPswd) {
+function validLogin(logName, logPswd) {
 
-    	var logNameE = logPswdE = true;
+	var logNameE = logPswdE = true;
 
-    	if (logName == "") {
+	if (logName == "") {
 
-        	console.log("Username blank");
+		console.log("Username blank");
 
-    	} else {
+	} else {
 
-        	var regex = /(?=.*[a-zA-Z])[a-zA-Z0-9-_]{3,18}$/;
+		var regex = /(?=.*[a-zA-Z])[a-zA-Z0-9-_]{3,18}$/;
 
-        	if (regex.test(logName) == false) {
+		if (regex.test(logName) == false) {
 
-            		console.log("Username invalid");
+			console.log("Username invalid");
 
-        	} else {
+		} else {
 
-            		console.log("Username valid");
-            		logNameE = false;
-        	}
-    	}
+			console.log("Username valid");
+			logNameE = false;
+		}
+	}
 
-    	if (logPswd == "") {
+	if (logPswd == "") {
 
-        	console.log("Password blank");
+		console.log("Password blank");
 
-    	} else {
+	} else {
 
-        	var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
+		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
 
-        	if (regex.test(logPswd) == false) {
+		if (regex.test(logPswd) == false) {
 
-            		console.log("Password invalid");
+			console.log("Password invalid");
 
-        	} else {
+		} else {
 
-            		console.log("Password valid");
-            		logPswdE = false;
-        	}
-    	}
+			console.log("Password valid");
+			logPswdE = false;
+		}
+	}
 
-    	if ((logNameE || logPassE) == true) {
+	if ((logNameE || logPassE) == true) {
 
-        	return false;
-    	}
+		return false;
+	}
 
 	return true;
 }
 
-function validSignUpForm(fName, lName, uName, pswd) {
+function validSignUp(fName, lName, uName, pswd) {
 
-    	var fNameE = lNameE = uNameE = pswdE = true;
+	var fNameE = lNameE = uNameE = pswdE = true;
 
-    	if (fName == "") {
+	if (fName == "") {
 
-        	console.log("First name blank");
+		console.log("First name blank");
 
-    	} else {
+	} else {
 
-        	console.log("First name valid");
-        	fNameE = false;
+		console.log("First name valid");
+		fNameE = false;
 
-    	} 
+	}
 
 	if (lName == "") {
 
-        	console.log("Last name blank");
+        console.log("Last name blank");
 
-    	} else {
+    } else {
 
-        	console.log("Last name valid");
-        	lNameE = false;
-    	} 
+        console.log("Last name valid");
+        lNameE = false;
+    } 
 
 	if (uName == "") {
 
-        	console.log("Username blank");
+		console.log("Username blank");
 
-    	} else {
+	} else {
 
-        	var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
+		var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
 
-        	if (regex.test(uName) == false) {
+		if (regex.test(uName) == false) {
 
-            		console.log("Username invalid");
+				console.log("Username invalid");
 
-        	} else {
+		} else {
 
-            		console.log("Username valid");
-            		uNameE = false;
-        	}
-    	}
-
-    	if (pswd == "") {
-
-        	console.log("Password blank");
-
-    	} else {
-
-        	var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
-
-        	if (regex.test(pswd) == false) {
-
-            		console.log("Password invalid");
-
-        	} else {
-
-            		console.log("Password valid");
-            		pswdE = false;
+				console.log("Username valid");
+				uNameE = false;
 		}
-    	}
+	}
 
-    	if ((fNameE || lNameE || uNameE || pswdE) == true) {
+	if (pswd == "") {
 
-        	return false;
+		console.log("Password blank");
 
-    	}
+	} else {
+
+		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
+
+		if (regex.test(pswd) == false) {
+
+				console.log("Password invalid");
+
+		} else {
+
+				console.log("Password valid");
+				pswdE = false;
+		}
+    }
+
+	if ((fNameE || lNameE || uNameE || pswdE) == true) {
+
+		return false;
+
+	}
 
 	return true;
 }
