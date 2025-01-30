@@ -86,15 +86,15 @@ function doSignUp() {
 	document.getElementById("signUpResult").innerHTML = "";
 
 	let tmp = {
-		firstName: firstName,
-		lastName: lastName,
-		userName: username,
-		password: hash
+		FirstName: firstName,
+		LastName: lastName,
+		Username: username,
+		Password: hash
 	};
 
 	let jsonPayload = JSON.stringify(tmp);
 
-	let url = urlBase + '/Register.' + extension;
+	let url = '/LAMPAPI/Register.' + extension;
 
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
