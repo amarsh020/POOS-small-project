@@ -1,4 +1,4 @@
-const urlBase = '104.248.52.44';
+const urlBase = '104.248.52.44/LAMPAPI';
 const extension = 'php';
 
 let userId = '0';
@@ -6,16 +6,68 @@ let firstName = "";
 let lastName = "";
 const ids = [];
 
-/* function doLogin() {
+function doLogin() {
 
 	userId = 0;
-	firstName = "";
-	lastName = "";
+    firstName = "";
+    lastName = "";
 
-	let login = document.getElementById("loginName").value;
-	let password = document.getElementById("loginPassword").value;
-	var hash = md5(password);
-} */
+    let login = document.getElementById("loginName").value;
+    let password = document.getElementById("loginPassword").value;
+
+    var hash = md5(password);
+
+    if (validLoginForm(login, password) == false) {
+
+        document.getElementById("loginResult").innerHTML = "invalid username or password";
+        return;
+    }
+
+    document.getElementById("loginResult").innerHTML = "";
+
+    let tmp = {
+        login: login,
+        password: hash
+    };
+
+    let jsonPayload = JSON.stringify(tmp);
+
+    let url = urlBase + '/Login.' + extension;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    try {
+
+        xhr.onreadystatechange = function () {
+
+            if (this.readyState == 4 && this.status == 200) {
+
+                let jsonObject = JSON.parse(xhr.responseText);
+                userId = jsonObject.id;
+
+                if (userId < 1) {
+
+                    document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
+                    return;
+                }
+
+                firstName = jsonObject.firstName;
+                lastName = jsonObject.lastName;
+
+                saveCookie();
+                window.location.href = "contacts.html";
+            }
+        };
+
+        xhr.send(jsonPayload);
+
+    } catch (err) {
+
+        document.getElementById("loginResult").innerHTML = err.message;
+    }
+}
 
 function doSignUp() {
 
@@ -78,7 +130,7 @@ function doSignUp() {
 		xhr.send(jsonPayload);
 
 	} catch (err) {
-		document.getElementById("signupResult").innerHTML = err.message;
+		document.getElementById("signUpResult").innerHTML = err.message;
 	}
 }
 
