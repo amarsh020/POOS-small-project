@@ -16,6 +16,7 @@ function doLogin() {
 	let password = document.getElementById("loginPassword").value;
 
 	var hash = md5(password);
+	console.log("Password Hash Sent:", hash);
 
 	if (validLogin(login, password) == false) {
 
@@ -44,6 +45,8 @@ function doLogin() {
 
 			if (this.readyState == 4 && this.status == 200) {
 
+				console.log("Server Response:", this.responseText);
+
 				let jsonObject = JSON.parse(xhr.responseText);
 				userId = jsonObject.id;
 
@@ -56,7 +59,10 @@ function doLogin() {
 				firstName = jsonObject.firstName;
 				lastName = jsonObject.lastName;
 
+				console.log("Saving Cookie...");
 				saveCookie();
+
+				console.log("Redirecting to contacts.html...");
 				window.location.href = "contacts.html";
 			}
 		};
@@ -65,6 +71,7 @@ function doLogin() {
 
 	} catch (err) {
 
+		console.error("Error parsing JSON:", error);
 		document.getElementById("loginResult").innerHTML = err.message;
 	}
 }
@@ -150,7 +157,7 @@ function readCookie() {
 
 	userId = -1;
 	let data = document.cookie;
-	let splits = data.split(",");
+	let splits = data.split(";");
 
 	for(var i = 0; i < splits.length; i++) {
 
