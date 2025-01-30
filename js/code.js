@@ -1,4 +1,4 @@
-const urlBase = 'http://contactsclassproject.xyz/LAMPAPI';
+const urlBase = '104.248.52.44';
 const extension = 'php';
 
 let userId = '0';
@@ -20,9 +20,9 @@ const ids = [];
 function doSignUp() {
 
 	fName = document.getElementById("firstName").value;
-    lName = document.getElementById("lastName").value;
-    let uName = document.getElementById("username").value;
-    let pswd = document.getElementById("password").value;
+	lName = document.getElementById("lastName").value;
+	let uName = document.getElementById("signUpUsername").value;
+	let pswd = document.getElementById("signUpPassword").value;
 
 	if (validSignUp(fName, lName, uName, pswd) ==  false) {
 		document.getElementById("signupResult").innerHTML = "Sign up invalid";
@@ -34,15 +34,15 @@ function doSignUp() {
 	document.getElementById("signUpResult").innerHTML = "";
 
 	let tmp = {
-		fName: fName,
-		lName: lName,
-		uName: uName,
-		pswd: hash
+		firstName: fName,
+		lastName: lName,
+		userName: uName,
+		password: hash
 	};
 
 	let jsonPayload = JSON.stringify(tmp);
 
-	let url = urlBase + '/SignUp.' + extension;
+	let url = urlBase + '/Register.' + extension;
 
 	let xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -80,7 +80,6 @@ function doSignUp() {
 	} catch (err) {
 		document.getElementById("signupResult").innerHTML = err.message;
 	}
-
 }
 
 function saveCookie() {
@@ -195,13 +194,13 @@ function validSignUp(fName, lName, uName, pswd) {
 
 	if (lName == "") {
 
-        console.log("Last name blank");
+		console.log("Last name blank");
 
-    } else {
+	} else {
 
-        console.log("Last name valid");
-        lNameE = false;
-    } 
+		console.log("Last name valid");
+		lNameE = false;
+	} 
 
 	if (uName == "") {
 
@@ -239,7 +238,7 @@ function validSignUp(fName, lName, uName, pswd) {
 				console.log("Password valid");
 				pswdE = false;
 		}
-    }
+	}
 
 	if ((fNameE || lNameE || uNameE || pswdE) == true) {
 
