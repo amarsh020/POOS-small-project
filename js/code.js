@@ -59,11 +59,11 @@ function doLogin() {
 				firstName = jsonObject.firstName;
 				lastName = jsonObject.lastName;
 
-				console.log("Saving Cookie...");
-				saveCookie();
+				console.log("Saving User Session");
+				saveSession();
 
 				console.log("Redirecting to contacts.html...");
-				window.location.href = "contacts.html";
+				window.location.assign("/contacts.html");
 			}
 		};
 
@@ -125,14 +125,8 @@ function doSignUp() {
                     return;
                 }
 
-
-				userId = jsonObject.id;
 				document.getElementById("signUpResult").innerHTML = "User added";
-
-				firstName = jsonObject.firstName;
-				lastName = jsonObject.lastName;
-
-				saveCookie();
+				doAutoLogin(username, password);
 			}
 		};
 
@@ -141,6 +135,52 @@ function doSignUp() {
 	} catch (err) {
 		document.getElementById("signUpResult").innerHTML = err.message;
 	}
+}
+
+function doAutoLogin(username, password) {
+    console.log("Auto-login after signup..."); // Debugging
+
+    let hash = md5(password);
+
+    let tmp = {
+        username: username,
+        password: hash
+    };
+
+    let jsonPayload = JSON.stringify(tmp);
+    let url = '/LAMPAPI/Login.' + extension;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    try {
+        xhr.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let jsonObject = JSON.parse(xhr.responseText);
+                userId = jsonObject.id;
+
+                if (userId < 1) {
+                    document.getElementById("signUpResult").innerHTML = "Login failed after signup.";
+                    return;
+                }
+
+                firstName = jsonObject.firstName;
+                lastName = jsonObject.lastName;
+
+                saveSession(); // Save session info
+                console.log("Auto-login successful. Redirecting...");
+
+                // Redirect to contacts page
+                window.location.assign("/contacts.html");
+            }
+        };
+
+        xhr.send(jsonPayload);
+
+    } catch (err) {
+        document.getElementById("signUpResult").innerHTML = err.message;
+    }
 }
 
 function saveCookie() {
@@ -368,4 +408,46 @@ function validSignUp(firstName, lastName, username, password) {
 	}
 
 	return true;
+}
+
+function saveSession() {
+    console.log("Saving session..."); // Debugging
+
+    localStorage.setItem("firstName", firstName);
+    localStorage.setItem("lastName", lastName);
+    localStorage.setItem("userId", userId.toString());
+
+    console.log("Session Data Set:", localStorage);
+}
+
+function readSession() {
+    userId = localStorage.getItem("userId");
+    firstName = localStorage.getItem("firstName");
+    lastName = localStorage.getItem("lastName");
+
+    console.log("Reading session:", { userId, firstName, lastName }); // Debugging
+
+        // Ensure userId is a valid number before checking
+    userId = userId ? parseInt(userId, 10) : -1;
+
+    if (!userId || userId < 1) {
+        console.warn("Invalid user session! Redirecting to login.");
+        window.location.href = "index.html";
+    } else {
+        document.getElementById("userName").innerHTML = "Logged in as " + firstName + " " + lastName;
+    }
+}
+
+function doLogout() {
+    console.log("Logging out..."); // Debugging
+
+    // Clear session storage
+    localStorage.removeItem("firstName");
+    localStorage.removeItem("lastName");
+    localStorage.removeItem("userId");
+
+    console.log("Session cleared:", localStorage); // Debugging
+
+    // Redirect to login page
+    window.location.href = "index.html";
 }
