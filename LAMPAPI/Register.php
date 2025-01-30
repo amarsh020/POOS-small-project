@@ -14,12 +14,28 @@ if( $conn->connect_error )
 }
 else
 {
-    $stmt = $conn->prepare("INSERT into Users (FirstName,LastName,Username,Password ) VALUES(?,?,?,?)");
-    $stmt->bind_param("ssss", $firstName, $lastName, $userName, $password);
+    // Check if the username already exists in db
+    $check_username_sql = "SELECT * FROM Users WHERE Username = ?";
+    $stmt = $conn->prepare($check_username_sql);
+    $stmt->bind_param("s", $userName);
     $stmt->execute();
-    $stmt->close();
-    $conn->close();
-    returnWithError("");
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0){
+
+        // Username already exists in db
+        returnWithError("Username already taken.");
+    }else{
+
+        //Username doesn't exist in db        
+        $stmt = $conn->prepare("INSERT into Users (FirstName,LastName,Username,Password ) VALUES(?,?,?,?)");
+        $stmt->bind_param("ssss", $firstName, $lastName, $userName, $password);
+        $stmt->execute();
+        $stmt->close();
+        $conn->close();
+        returnWithError("");
+    }
+
 }
 
 function getRequestInfo()

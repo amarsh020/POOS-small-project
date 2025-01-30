@@ -108,16 +108,18 @@ function doSignUp() {
 				return;
 			}
 
-			if (this.status == 409) {
-				document.getElementById("signUpResult").innerHTML = "User already exists";
-				return;
-			}
-
 			if (this.status == 200) {
 
 				let jsonObject = JSON.parse(xhr.responseText);
-				userId = jsonObject.id;
+				
+				if (jsonObject.error && jsonObject.error !== "") {
+                    // If an error exists in the response, display it
+                    document.getElementById("signUpResult").innerHTML = jsonObject.error;
+                    return;
+                }
 
+
+				userId = jsonObject.id;
 				document.getElementById("signUpResult").innerHTML = "User added";
 
 				firstName = jsonObject.firstName;
