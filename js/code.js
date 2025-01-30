@@ -26,7 +26,7 @@ function doLogin() {
 	document.getElementById("loginResult").innerHTML = "";
 
 	let tmp = {
-		login: login,
+		username: login,
 		password: hash
 	};
 
