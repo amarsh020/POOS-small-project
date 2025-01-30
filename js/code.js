@@ -2,30 +2,30 @@ const urlBase = '104.248.52.44';
 const extension = 'php';
 
 let userId = '0';
-let fName = "";
-let lName = "";
+let firstName = "";
+let lastName = "";
 const ids = [];
 
 /* function doLogin() {
 
 	userId = 0;
-	fName = "";
-	lName = "";
+	firstName = "";
+	lastName = "";
 
 	let login = document.getElementById("loginName").value;
-	let pswd = document.getElementById("loginPassword").value;
-	var hash = md5(pswd);
+	let password = document.getElementById("loginPassword").value;
+	var hash = md5(password);
 } */
 
 function doSignUp() {
 
-	fName = document.getElementById("firstName").value;
-	lName = document.getElementById("lastName").value;
-	let uName = document.getElementById("signUpUsername").value;
-	let pswd = document.getElementById("signUpPassword").value;
+	firstName = document.getElementById("firstName").value;
+	lastName = document.getElementById("lastName").value;
+	let username = document.getElementById("signUpUsername").value;
+	let password = document.getElementById("signUpPassword").value;
 
-	if (validSignUp(fName, lName, uName, pswd) ==  false) {
-		document.getElementById("signupResult").innerHTML = "Sign up invalid";
+	if (validSignUp(firstName, lastName, username, password) ==  false) {
+		document.getElementById("signUpResult").innerHTML = "Sign up invalid";
 		return;
 	}
 
@@ -34,9 +34,9 @@ function doSignUp() {
 	document.getElementById("signUpResult").innerHTML = "";
 
 	let tmp = {
-		firstName: fName,
-		lastName: lName,
-		userName: uName,
+		firstName: firstName,
+		lastName: lastName,
+		userName: username,
 		password: hash
 	};
 
@@ -57,7 +57,7 @@ function doSignUp() {
 			}
 
 			if (this.status == 409) {
-				document.getElementById("signupResult").innerHTML = "User already exists";
+				document.getElementById("signUpResult").innerHTML = "User already exists";
 				return;
 			}
 
@@ -66,10 +66,10 @@ function doSignUp() {
 				let jsonObject = JSON.parse(xhr.responseText);
 				userId = jsonObject.id;
 
-				document.getElementById("signupResult").innerHTML = "User added";
+				document.getElementById("signUpResult").innerHTML = "User added";
 
-				fName = jsonObject.firstName;
-				lName = jsonObject.lastName;
+				firstName = jsonObject.firstName;
+				lastName = jsonObject.lastName;
 
 				saveCookie();
 			}
@@ -127,9 +127,9 @@ function readCookie() {
 	}
 }
 
-function validLogin(logName, logPswd) {
+function validLogin(logName, logPassword) {
 
-	var logNameE = logPswdE = true;
+	var logNameE = logPasswordE = true;
 
 	if (logName == "") {
 
@@ -150,7 +150,7 @@ function validLogin(logName, logPswd) {
 		}
 	}
 
-	if (logPswd == "") {
+	if (logPassword == "") {
 
 		console.log("Password blank");
 
@@ -158,14 +158,14 @@ function validLogin(logName, logPswd) {
 
 		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
 
-		if (regex.test(logPswd) == false) {
+		if (regex.test(logpassword) == false) {
 
 			console.log("Password invalid");
 
 		} else {
 
 			console.log("Password valid");
-			logPswdE = false;
+			logPasswordE = false;
 		}
 	}
 
@@ -177,32 +177,32 @@ function validLogin(logName, logPswd) {
 	return true;
 }
 
-function validSignUp(fName, lName, uName, pswd) {
+function validSignUp(firstName, lastName, username, password) {
 
-	var fNameE = lNameE = uNameE = pswdE = true;
+	var firstNameE = lastNameE = usernameE = passwordE = true;
 
-	if (fName == "") {
+	if (firstName == "") {
 
 		console.log("First name blank");
 
 	} else {
 
 		console.log("First name valid");
-		fNameE = false;
+		firstNameE = false;
 
 	}
 
-	if (lName == "") {
+	if (lastName == "") {
 
 		console.log("Last name blank");
 
 	} else {
 
 		console.log("Last name valid");
-		lNameE = false;
+		lastNameE = false;
 	} 
 
-	if (uName == "") {
+	if (username == "") {
 
 		console.log("Username blank");
 
@@ -210,18 +210,18 @@ function validSignUp(fName, lName, uName, pswd) {
 
 		var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
 
-		if (regex.test(uName) == false) {
+		if (regex.test(username) == false) {
 
 				console.log("Username invalid");
 
 		} else {
 
 				console.log("Username valid");
-				uNameE = false;
+				usernameE = false;
 		}
 	}
 
-	if (pswd == "") {
+	if (password == "") {
 
 		console.log("Password blank");
 
@@ -229,18 +229,18 @@ function validSignUp(fName, lName, uName, pswd) {
 
 		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
 
-		if (regex.test(pswd) == false) {
+		if (regex.test(password) == false) {
 
 				console.log("Password invalid");
 
 		} else {
 
 				console.log("Password valid");
-				pswdE = false;
+				passwordE = false;
 		}
 	}
 
-	if ((fNameE || lNameE || uNameE || pswdE) == true) {
+	if ((firstNameE || lastNameE || usernameE || passwordE) == true) {
 
 		return false;
 
