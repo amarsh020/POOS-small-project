@@ -1,0 +1,258 @@
+/* Set background properties for the body, including a fixed background image that covers the entire screen */
+body {
+    background-image: url('../images/background.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+/* Styling for the main content section */
+.content {
+    padding: 1px 16px;
+    height: 1000px;
+    margin-top: 25px;
+    margin-left: 270px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    overflow: hidden; /* Prevents scrolling */
+}
+
+/* Styling for the div that displays logged-in user information */
+.loggedInDiv {
+    font-family: 'Montserrat';
+    font-weight: bolder;
+    font-size: 2vw;
+    align-self: center; /* Centers the element */
+}
+
+/* Styling for an access-related UI section */
+.accessUIDiv {
+    margin: 10px;
+    padding: 10px 10px;
+    text-align: center;
+    align-self: center; /* Centers the element */
+}
+
+/* Column layout for elements */
+.column {
+    display: inline-block;
+    padding: 10px 10px;
+    vertical-align: middle;
+}
+
+/* Styling for circular buttons inside columns */
+.column button {
+    position: relative;
+    background: #ffffff;
+    border-radius: 50%;
+    padding: 15px;
+    margin: 10px;
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    display: flex;
+    border: none;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Center alignment for tables */
+.tables {
+    align-self: center;
+}
+
+/* Center alignment for add contacts section */
+.addContacts {
+    align-self: center;
+}
+
+/* Styling for the add contacts form */
+#addMe {
+    font-family: 'Montserrat';
+    display: none;
+    border-radius: 17px;
+    position: relative;
+    background: rgba(234, 207, 155, 0.9);
+    max-width: 350px;
+    margin: 0 auto 50px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+}
+
+/* Styling for inputs inside addMe form */
+#addMe input {
+    border-radius: 17px;
+    font-family: 'Montserrat';
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* Add green border for valid inputs */
+#addMe>input:valid {
+    border: 2px solid #009345;
+}
+
+/* Add red border for invalid inputs */
+#addMe>input:invalid {
+    border: 2px solid red;
+}
+
+/* Ensure required invalid fields have white background */
+#addMe>input:invalid:required {
+    background-image: white;
+}
+
+/* Styling for buttons inside addMe form */
+#addMe button {
+    border-radius: 17px;
+    font-family: 'Montserrat';
+    outline: 0;
+    background: #78500b;
+    color: rgba(234, 207, 155, 0.9);
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Styling for inputs inside the contacts table */
+#contacts td input {
+    border-radius: 17px;
+    font-family: 'Montserrat';
+    outline: 0;
+    background: #fbde99;
+    width: 100%;
+    border: 0;
+    margin: 0 0 15px;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+/* General button styling */
+.btn {
+    color: #34004f;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: bolder;
+    font-size: 2.3vw;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.3em 1.2em;
+    margin: 0.6em 0.3em 0.3em 0;
+    float: right;
+}
+
+/* Hover effect for buttons */
+.btn:hover {
+    color: #897261;
+}
+
+/* Styling for the search bar container */
+.search-container {
+    background: #fff;
+    font-family: 'Montserrat';
+    height: 30px;
+    width: 400px;
+    border-radius: 30px;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.8s;
+    box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, .3),
+        -4px -4px 6px 0 rgba(116, 125, 136, .2),
+        inset -4px -4px 6px 0 rgba(255, 255, 255, .2),
+        inset 4px 4px 6px 0 rgba(0, 0, 0, .2);
+}
+
+/* Expand search input on hover */
+.search-container:hover>.search-input {
+    width: 400px;
+}
+
+/* Styling for search input */
+.search-container .search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 0px;
+    font-family: 'Montserrat';
+    font-weight: 500;
+    font-size: 16px;
+    transition: 0.8s;
+}
+
+/* Styling for the table that contains contacts */
+#contactsTable {
+    display: block;
+    height: 500px;
+}
+
+/* Styling for tables */
+table {
+    width:100%;
+    table-layout: fixed;
+    border-radius: 5px;
+}
+
+/* Styling for table content wrapper */
+.tbl-content {
+    height: 300px;
+    overflow-x: auto;
+    margin-top: 0px;
+    border: 1px solid rgba(115, 169, 232, 0.9);
+}
+
+/* Styling for table header cells */
+#contacts th {
+    padding: 20px 15px;
+    text-align: left;
+    font-family: 'Montserrat';
+    font-weight: bold;
+    font-size: 16px;
+    color: white;
+    background-color: rgba(87, 123, 208, 0.9);
+    text-transform: uppercase;
+}
+
+/* Side navigation menu */
+.sidenav {
+    width: 264px;
+    height: 100%;
+    position: fixed;
+    background: rgba(255, 30, 162, 1);
+}
+
+/* Navigation links inside sidenav */
+.sidenav a {
+    padding: 10px 0px 15px 0px;
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    font-family: 'Montserrat';
+    font-size: 25px;
+    color: #007D2F;
+}
+
+
