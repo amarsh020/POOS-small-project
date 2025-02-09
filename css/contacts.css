@@ -77,11 +77,17 @@ body {
 /* Styling for the add contacts form */
 #addMe {
     font-family: 'Montserrat';
-    display: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border-radius: 17px;
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: rgba(234, 207, 155, 0.9);
-    max-width: 350px;
+    width: 400px;
+    max-width: 90%;
     margin: 0 auto 50px;
     padding: 30px;
     text-align: center;
@@ -153,7 +159,7 @@ body {
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: bolder;
-    font-size: 2.3vw;
+    font-size: 1rem;
     background: none;
     border: none;
     cursor: pointer;
@@ -253,5 +259,126 @@ table {
     font-family: 'Montserrat';
     font-size: 25px;
     color: #007D2F;
+}
+
+/* Contact Grid Layout - 3 rows x 4 columns */
+.contacts-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    grid-template-rows: repeat(3, auto);  /* 3 rows */
+    gap: 15px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Contact Card Styling */
+.contact-card {
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 220px;
+}
+
+/* Profile Initials */
+.initials {
+    width: 50px;
+    height: 50px;
+    background: #4CAF50;
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Contact Details */
+.contact-details {
+    flex-grow: 1;
+    padding: 5px;
+}
+
+.contact-details h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+.contact-details p {
+    font-size: 12px;
+    margin: 3px 0;
+    color: #555;
+}
+
+/* Edit and Delete Buttons */
+.buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.edit-btn, .delete-btn {
+    background: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.delete-btn {
+    background: #E53935;
+}
+
+/* Pagination Buttons */
+.pagination {
+    text-align: center;
+    margin-top: 15px;
+}
+
+.pagination button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.pagination button:hover {
+    background-color: #45a049;
+}
+
+.pagination button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+
+#addContactForm {
+    position: fixed; /* Make sure it's above other content */
+    top: 50%; /* Center it vertically */
+    left: 50%; /* Center it horizontally */
+    transform: translate(-50%, -50%); /* Adjust for perfect centering */
+    background: rgba(255, 255, 255, 0.95); /* Light background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for visibility */
+    z-index: 9999; /* Make sure it's on top of everything */
+    display: none; /* Keep it hidden until shown */
+    width: 350px; /* Adjust width */
+    max-width: 90%; /* Prevent it from getting too large */
 }
 

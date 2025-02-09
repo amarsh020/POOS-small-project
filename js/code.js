@@ -1,453 +1,564 @@
-const urlBase = '104.248.52.44/LAMPAPI';
-const extension = 'php';
+const urlBase = "104.248.52.44/LAMPAPI";
+const extension = "php";
 
-let userId = '0';
+let userId = "0";
 let firstName = "";
 let lastName = "";
+allContacts=[]
+currentPage = 1;
+const contactsPerPage = 12;
 const ids = [];
 
 function doLogin() {
+  userId = 0;
+  firstName = "";
+  lastName = "";
 
-	userId = 0;
-	firstName = "";
-	lastName = "";
+  let login = document.getElementById("loginName").value;
+  let password = document.getElementById("loginPassword").value;
 
-	let login = document.getElementById("loginName").value;
-	let password = document.getElementById("loginPassword").value;
+  var hash = md5(password);
+  console.log("Password Hash Sent:", hash);
 
-	var hash = md5(password);
-	console.log("Password Hash Sent:", hash);
+  if (validLogin(login, password) == false) {
+    document.getElementById("loginResult").innerHTML =
+      "invalid username or password";
+    return;
+  }
 
-	if (validLogin(login, password) == false) {
+  document.getElementById("loginResult").innerHTML = "";
 
-		document.getElementById("loginResult").innerHTML = "invalid username or password";
-		return;
-    }
+  let tmp = {
+    username: login,
+    password: hash,
+  };
 
-	document.getElementById("loginResult").innerHTML = "";
+  let jsonPayload = JSON.stringify(tmp);
 
-	let tmp = {
-		username: login,
-		password: hash
-	};
+  let url = "/LAMPAPI/Login." + extension;
 
-	let jsonPayload = JSON.stringify(tmp);
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-	let url = '/LAMPAPI/Login.' + extension;
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        console.log("Server Response:", this.responseText);
 
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+        let jsonObject = JSON.parse(xhr.responseText);
+        userId = jsonObject.id;
 
-	try {
+        if (userId < 1) {
+          document.getElementById("loginResult").innerHTML =
+            "User/Password combination incorrect";
+          return;
+        }
 
-		xhr.onreadystatechange = function () {
+        firstName = jsonObject.firstName;
+        lastName = jsonObject.lastName;
 
-			if (this.readyState == 4 && this.status == 200) {
+        console.log("Saving User Session");
+        saveSession();
 
-				console.log("Server Response:", this.responseText);
+        console.log("Redirecting to contacts.html...");
+        window.location.assign("/contacts.html");
+      }
+    };
 
-				let jsonObject = JSON.parse(xhr.responseText);
-				userId = jsonObject.id;
-
-				if (userId < 1) {
-
-					document.getElementById("loginResult").innerHTML = "User/Password combination incorrect";
-					return;
-				}
-
-				firstName = jsonObject.firstName;
-				lastName = jsonObject.lastName;
-
-				console.log("Saving User Session");
-				saveSession();
-
-				console.log("Redirecting to contacts.html...");
-				window.location.assign("/contacts.html");
-			}
-		};
-
-		xhr.send(jsonPayload);
-
-	} catch (err) {
-
-		console.error("Error parsing JSON:", error);
-		document.getElementById("loginResult").innerHTML = err.message;
-	}
+    xhr.send(jsonPayload);
+  } catch (err) {
+    console.error("Error parsing JSON:", error);
+    document.getElementById("loginResult").innerHTML = err.message;
+  }
 }
 
 function doSignUp() {
+  firstName = document.getElementById("firstName").value;
+  lastName = document.getElementById("lastName").value;
+  let username = document.getElementById("signUpUsername").value;
+  let password = document.getElementById("signUpPassword").value;
 
-	firstName = document.getElementById("firstName").value;
-	lastName = document.getElementById("lastName").value;
-	let username = document.getElementById("signUpUsername").value;
-	let password = document.getElementById("signUpPassword").value;
+  if (validSignUp(firstName, lastName, username, password) == false) {
+    document.getElementById("signUpResult").innerHTML = "Sign up invalid";
+    return;
+  }
 
-	if (validSignUp(firstName, lastName, username, password) ==  false) {
-		document.getElementById("signUpResult").innerHTML = "Sign up invalid";
-		return;
-	}
+  var hash = md5(password);
 
-	var hash = md5(password);
+  document.getElementById("signUpResult").innerHTML = "";
 
-	document.getElementById("signUpResult").innerHTML = "";
+  let tmp = {
+    FirstName: firstName,
+    LastName: lastName,
+    Username: username,
+    Password: hash,
+  };
 
-	let tmp = {
-		FirstName: firstName,
-		LastName: lastName,
-		Username: username,
-		Password: hash
-	};
+  let jsonPayload = JSON.stringify(tmp);
 
-	let jsonPayload = JSON.stringify(tmp);
+  let url = "/LAMPAPI/Register." + extension;
 
-	let url = '/LAMPAPI/Register.' + extension;
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState != 4) {
+        return;
+      }
 
-	try {
+      if (this.status == 200) {
+        let jsonObject = JSON.parse(xhr.responseText);
 
-		xhr.onreadystatechange = function () {
+        if (jsonObject.error && jsonObject.error !== "") {
+          // If an error exists in the response, display it
+          document.getElementById("signUpResult").innerHTML = jsonObject.error;
+          return;
+        }
 
-			if (this.readyState != 4) {
-				return;
-			}
+        document.getElementById("signUpResult").innerHTML = "User added";
+        doAutoLogin(username, password);
+      }
+    };
 
-			if (this.status == 200) {
-
-				let jsonObject = JSON.parse(xhr.responseText);
-				
-				if (jsonObject.error && jsonObject.error !== "") {
-                    // If an error exists in the response, display it
-                    document.getElementById("signUpResult").innerHTML = jsonObject.error;
-                    return;
-                }
-
-				document.getElementById("signUpResult").innerHTML = "User added";
-				doAutoLogin(username, password);
-			}
-		};
-
-		xhr.send(jsonPayload);
-
-	} catch (err) {
-		document.getElementById("signUpResult").innerHTML = err.message;
-	}
+    xhr.send(jsonPayload);
+  } catch (err) {
+    document.getElementById("signUpResult").innerHTML = err.message;
+  }
 }
 
 function doAutoLogin(username, password) {
-    console.log("Auto-login after signup..."); // Debugging
+  console.log("Auto-login after signup..."); // Debugging
 
-    let hash = md5(password);
+  let hash = md5(password);
 
-    let tmp = {
-        username: username,
-        password: hash
+  let tmp = {
+    username: username,
+    password: hash,
+  };
+
+  let jsonPayload = JSON.stringify(tmp);
+  let url = "/LAMPAPI/Login." + extension;
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+        let jsonObject = JSON.parse(xhr.responseText);
+        userId = jsonObject.id;
+
+        if (userId < 1) {
+          document.getElementById("signUpResult").innerHTML =
+            "Login failed after signup.";
+          return;
+        }
+
+        firstName = jsonObject.firstName;
+        lastName = jsonObject.lastName;
+
+        saveSession(); // Save session info
+        console.log("Auto-login successful. Redirecting...");
+
+        // Redirect to contacts page
+        window.location.assign("/contacts.html");
+      }
     };
 
-    let jsonPayload = JSON.stringify(tmp);
-    let url = '/LAMPAPI/Login.' + extension;
-
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", url, true);
-    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-    try {
-        xhr.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                let jsonObject = JSON.parse(xhr.responseText);
-                userId = jsonObject.id;
-
-                if (userId < 1) {
-                    document.getElementById("signUpResult").innerHTML = "Login failed after signup.";
-                    return;
-                }
-
-                firstName = jsonObject.firstName;
-                lastName = jsonObject.lastName;
-
-                saveSession(); // Save session info
-                console.log("Auto-login successful. Redirecting...");
-
-                // Redirect to contacts page
-                window.location.assign("/contacts.html");
-            }
-        };
-
-        xhr.send(jsonPayload);
-
-    } catch (err) {
-        document.getElementById("signUpResult").innerHTML = err.message;
-    }
+    xhr.send(jsonPayload);
+  } catch (err) {
+    document.getElementById("signUpResult").innerHTML = err.message;
+  }
 }
 
 function saveCookie() {
+  let minutes = 20;
+  let date = new Date();
 
-	let minutes = 20;
-	let date = new Date();
+  date.setTime(date.getTime() + minutes * 60 * 1000);
 
-	date.setTime(date.getTime() + (minutes * 60 * 1000));
-
-	document.cookie = "firstName=" + firstName + ",lastName=" + lastName + ",userId=" + userId + ";expires=" + date.toGMTString();
+  document.cookie =
+    "firstName=" +
+    firstName +
+    ",lastName=" +
+    lastName +
+    ",userId=" +
+    userId +
+    ";expires=" +
+    date.toGMTString();
 }
 
 function readCookie() {
+  userId = -1;
+  let data = document.cookie;
+  let splits = data.split(";");
 
-	userId = -1;
-	let data = document.cookie;
-	let splits = data.split(";");
+  for (var i = 0; i < splits.length; i++) {
+    let thisOne = splits[i].trim();
+    let tokens = thisOne.split("=");
 
-	for(var i = 0; i < splits.length; i++) {
+    if (tokens[0] == "firstName") {
+      firstName = tokens[1];
+    } else if (tokens[0] == "lastName") {
+      lastName = tokens[1];
+    } else if (tokens[0] == "userId") {
+      userId = parseInt(tokens[1].trim());
+    }
+  }
 
-		let thisOne = splits[i].trim();
-		let tokens = thisOne.split("=");
-
-		if(tokens[0] == "firstName") {
-
-			firstName = tokens[1];
-
-		} else if(tokens[0] == "lastName") {
-
-			lastName = tokens[1];
-
-		} else if(tokens[0] == "userId") {
-
-			userId = parseInt(tokens[1].trim());
-		}
-	}
-	
-	if(userId < 0) {
-
-		window.location.href = "index.html";
-
-	} else {
-
-		document.getElementById("userName").innerHTML = "Logged in as " + firstName + " " + lastName;
-	}
+  if (userId < 0) {
+    window.location.href = "index.html";
+  } else {
+    document.getElementById("userName").innerHTML =
+      "Logged in as " + firstName + " " + lastName;
+  }
 }
 
-function loadContacts() {
-	
-	let tmp = {
-		search: "",
-		userId: userId
-	};
+function displayContacts(contacts) {
+        let contactsContainer = document.getElementById("contactsContainer");
+        contactsContainer.innerHTML = ""; // Clear existing contacts
+    
+        let start = (currentPage - 1) * contactsPerPage;
+        let end = start + contactsPerPage;
+        let paginatedContacts = contacts.slice(start, end);
+    
+        paginatedContacts.forEach(contact => {
+            let contactCard = document.createElement("div");
+            contactCard.classList.add("contact-card");
+    
+            // Left - Initials
+            let initialsDiv = document.createElement("div");
+            initialsDiv.classList.add("initials");
+            initialsDiv.textContent = `${contact.FirstName[0].toUpperCase()}${contact.LastName[0].toUpperCase()}`;
+    
+            // Center - Contact Info
+            let contactDetails = document.createElement("div");
+            contactDetails.classList.add("contact-details");
+            contactDetails.innerHTML = `
+                <h3>${contact.FirstName} ${contact.LastName}</h3>
+                <p>${formatPhoneNumber(contact.Phone)}</p>
+                <p>${contact.Email}</p>
+            `;
+    
+            // Right - Buttons
+            let buttonsDiv = document.createElement("div");
+            buttonsDiv.classList.add("buttons-container");
+    
+            let editButton = document.createElement("button");
+            editButton.classList.add("edit-btn");
+            editButton.textContent = "Edit";
+            editButton.addEventListener("click", () =>
+                editContact(contactCard, contactDetails, editButton, saveButton, deleteButton, contact.ID)
+            );
+    
+            let deleteButton = document.createElement("button");
+            deleteButton.classList.add("delete-btn");
+            deleteButton.textContent = "Delete";
+            deleteButton.addEventListener("click", () =>
+                deleteContact(contactCard, contact.FirstName, contact.LastName)
+            );
+    
+            buttonsDiv.appendChild(editButton);
+            buttonsDiv.appendChild(deleteButton);
+    
+            // Append Elements
+            contactCard.appendChild(initialsDiv);
+            contactCard.appendChild(contactDetails);
+            contactCard.appendChild(buttonsDiv);
+            contactsContainer.appendChild(contactCard);
+        });
+    
+        updatePaginationButtons(contacts.length);
+    }
+    
+    // Updates pagination buttons
+    function updatePaginationButtons(totalContacts) {
+        let paginationContainer = document.getElementById("pagination");
+        paginationContainer.innerHTML = ""; // Clear previous buttons
+    
+        let totalPages = Math.ceil(totalContacts / contactsPerPage);
+    
+        let prevButton = document.createElement("button");
+        prevButton.textContent = "Previous";
+        prevButton.disabled = currentPage === 1;
+        prevButton.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayContacts(allContacts); // Refresh contacts
+            }
+        });
+    
+        let nextButton = document.createElement("button");
+        nextButton.textContent = "Next";
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.addEventListener("click", () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                displayContacts(allContacts); // Refresh contacts
+            }
+        });
+    
+        paginationContainer.appendChild(prevButton);
+        paginationContainer.appendChild(nextButton);
+}
+    
 
-	let jsonPayload = JSON.stringify(tmp);
-
-	let url = '/LAMPAPI/SearchContacts.' + extension;
-	let xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-	try {
-
-		xhr.onreadystatechange = function () {
-
-			if (this.readyState == 4 && this.status == 200) {
-
-				let jsonObject = JSON.parse(xhr.responseText);
-
-				if (jsonObject.error) {
-
-					console.log(jsonObject.error);
-					return;
-				}
-
-				let text = "<table border='1'>"
-
-				for (let i = 0; i < jsonObject.results.length; i++) {
-
-					ids[i] = jsonObject.results[i].ID
-
-					text += "<tr id='row" + i + "'>"
-					text += "<td id='first_Name" + i + "'><span>" + jsonObject.results[i].FirstName + "</span></td>";
-					text += "<td id='last_Name" + i + "'><span>" + jsonObject.results[i].LastName + "</span></td>";
-					text += "<td id='email" + i + "'><span>" + jsonObject.results[i].EmailAddress + "</span></td>";
-					text += "<td id='phone" + i + "'><span>" + jsonObject.results[i].PhoneNumber + "</span></td>";
-
-					text += "<td>" +
-						"<button type='button' id='edit_button" + i + "' class='w3-button w3-circle w3-lime' onclick='edit_row(" + i + ")'>" + "<span class='glyphicon glyphicon-edit'></span>" + "</button>" +
-						"<button type='button' id='save_button" + i + "' value='Save' class='w3-button w3-circle w3-lime' onclick='save_row(" + i + ")' style='display: none'>" + "<span class='glyphicon glyphicon-saved'></span>" + "</button>" +
-						"<button type='button' onclick='delete_row(" + i + ")' class='w3-button w3-circle w3-amber'>" + "<span class='glyphicon glyphicon-trash'></span> " + "</button>" + "</td>";
-					text += "<tr/>"
-				}
-
-				text += "</table>"
-				document.getElementById("tbody").innerHTML = text;
-			}
-		};
-
-		xhr.send(jsonPayload);
-
-	} catch (err) {
-		
-		console.log(err.message);
-	}
+function formatPhoneNumber(phone) {
+  return phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
 }
 
-function validLogin(logName, logPassword) {
+function loadContacts(searchQuery = "") {
+  console.log("Loading contacts... Search Query:", searchQuery);
 
-	var logNameE = logPasswordE = true;
+  let userId = localStorage.getItem("userId");
+  if (!userId || parseInt(userId, 10) < 1) {
+    console.error("No valid session found, redirecting to login...");
+    window.location.href = "index.html";
+    return;
+  }
 
-	if (logName == "") {
+  userId = parseInt(userId, 10);
 
-		console.log("Username blank");
+  let tmp = {
+    search: searchQuery,
+    userId: userId,
+  };
+  let jsonPayload = JSON.stringify(tmp);
 
-	} else {
+  let url = "/LAMPAPI/SearchContacts." + extension;
 
-		var regex = /(?=.*[a-zA-Z])[a-zA-Z0-9-_]{3,18}$/;
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
 
-		if (regex.test(logName) == false) {
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        let jsonObject = JSON.parse(xhr.responseText);
+        let contactsContainer = document.getElementById("contactsContainer");
+        contactsContainer.innerHTML = "";
 
-			console.log("Username invalid");
+        if (!jsonObject.results || jsonObject.results.length === 0) {
+          console.log("No contacts found.");
+          contactsContainer.innerHTML = "<p>No contacts found.</p>";
+          return;
+        }
 
-		} else {
+        jsonObject.results.sort((a, b) => {
+          let fullNameA = (a.FirstName + " " + a.LastName).toLowerCase();
+          let fullNameB = (b.FirstName + " " + b.LastName).toLowerCase();
+          return fullNameA.localeCompare(fullNameB);
+        });
+        allContacts=jsonObject.results;
 
-			console.log("Username valid");
-			logNameE = false;
-		}
-	}
-
-	if (logPassword == "") {
-
-		console.log("Password blank");
-
-	} else {
-
-		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
-
-		if (regex.test(logPassword) == false) {
-
-			console.log("Password invalid");
-
-		} else {
-
-			console.log("Password valid");
-			logPasswordE = false;
-		}
-	}
-
-	if ((logNameE || logPasswordE) == true) {
-
-		return false;
-	}
-
-	return true;
+        displayContacts(jsonObject.results);
+      }
+    };
+    xhr.send(jsonPayload);
+  } catch (err) {
+    console.error("Error loading contacts:", err.message);
+  }
 }
 
-function validSignUp(firstName, lastName, username, password) {
-
-	var firstNameE = lastNameE = usernameE = passwordE = true;
-
-	if (firstName == "") {
-
-		console.log("First name blank");
-
-	} else {
-
-		console.log("First name valid");
-		firstNameE = false;
-
-	}
-
-	if (lastName == "") {
-
-		console.log("Last name blank");
-
-	} else {
-
-		console.log("Last name valid");
-		lastNameE = false;
-	} 
-
-	if (username == "") {
-
-		console.log("Username blank");
-
-	} else {
-
-		var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
-
-		if (regex.test(username) == false) {
-
-				console.log("Username invalid");
-
-		} else {
-
-				console.log("Username valid");
-				usernameE = false;
-		}
-	}
-
-	if (password == "") {
-
-		console.log("Password blank");
-
-	} else {
-
-		var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
-
-		if (regex.test(password) == false) {
-
-				console.log("Password invalid");
-
-		} else {
-
-				console.log("Password valid");
-				passwordE = false;
-		}
-	}
-
-	if ((firstNameE || lastNameE || usernameE || passwordE) == true) {
-
-		return false;
-
-	}
-
-	return true;
+function searchContacts() {
+  let searchQuery = document.getElementById("searchText").value.trim();
+  loadContacts(searchQuery);
 }
 
-function saveSession() {
-    console.log("Saving session..."); // Debugging
+function showTable() {
+  let form = document.getElementById("addContactForm");
+  if (!form) {
+    console.error("Error: Element with ID 'addContactForm' not found.");
+    return;
+  }
 
-    localStorage.setItem("firstName", firstName);
-    localStorage.setItem("lastName", lastName);
-    localStorage.setItem("userId", userId.toString());
-
-    console.log("Session Data Set:", localStorage);
-}
-
-function readSession() {
-    userId = localStorage.getItem("userId");
-    firstName = localStorage.getItem("firstName");
-    lastName = localStorage.getItem("lastName");
-
-    console.log("Reading session:", { userId, firstName, lastName }); // Debugging
-
-        // Ensure userId is a valid number before checking
-    userId = userId ? parseInt(userId, 10) : -1;
-
-    if (!userId || userId < 1) {
-        console.warn("Invalid user session! Redirecting to login.");
-        window.location.href = "index.html";
+  if (form.style.display === "none" || form.style.display === "") {
+        console.log("Showing add contact form.");
+        form.style.display = "block"; // Force display
+        form.style.visibility = "visible"; // Ensure it's visible
     } else {
-        document.getElementById("userName").innerHTML = "Logged in as " + firstName + " " + lastName;
+        console.log("Hiding add contact form.");
+        form.style.display = "none";
     }
 }
 
-function doLogout() {
-    console.log("Logging out..."); // Debugging
+function addContact() {
+  console.log("Adding contact...");
+  let form = document.getElementById("addContactForm");
 
-    // Clear session storage
-    localStorage.removeItem("firstName");
-    localStorage.removeItem("lastName");
-    localStorage.removeItem("userId");
+  let firstName = document.getElementById("contactTextFirst").value.trim();
+  let lastName = document.getElementById("contactTextLast").value.trim();
+  let phone = document.getElementById("contactTextNumber").value.trim();
+  let email = document.getElementById("contactTextEmail").value.trim();
+  let userId = localStorage.getItem("userId");
 
-    console.log("Session cleared:", localStorage); // Debugging
+  // Validate fields
+  if (!firstName || !lastName || !phone || !email) {
+    alert("Please fill in all fields.");
+    return;
+  }
 
-    // Redirect to login page
+  userId = parseInt(userId, 10);
+
+  let tmp = {
+    FirstName: firstName,
+    LastName: lastName,
+    Phone: phone,
+    Email: email,
+    UserID: userId,
+  };
+  let jsonPayload = JSON.stringify(tmp);
+
+  let url = "/LAMPAPI/AddContact." + extension;
+
+  let xhr = new XMLHttpRequest();
+  xhr.open("POST", url, true);
+  xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+  try {
+    xhr.onreadystatechange = function () {
+      if (this.readyState === 4 && this.status === 200) {
+        console.log("Contact added successfully.");
+        document.getElementById("addMe").reset();
+        loadContacts();
+        form.style.display = "none";
+      }
+    };
+    xhr.send(jsonPayload);
+  } catch (err) {
+    console.error("Error adding contact:", err.message);
+  }
+}
+
+function validLogin(logName, logPassword) {
+  var logNameE = (logPasswordE = true);
+
+  if (logName == "") {
+    console.log("Username blank");
+  } else {
+    var regex = /(?=.*[a-zA-Z])[a-zA-Z0-9-_]{3,18}$/;
+
+    if (regex.test(logName) == false) {
+      console.log("Username invalid");
+    } else {
+      console.log("Username valid");
+      logNameE = false;
+    }
+  }
+
+  if (logPassword == "") {
+    console.log("Password blank");
+  } else {
+    var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
+
+    if (regex.test(logPassword) == false) {
+      console.log("Password invalid");
+    } else {
+      console.log("Password valid");
+      logPasswordE = false;
+    }
+  }
+
+  if ((logNameE || logPasswordE) == true) {
+    return false;
+  }
+
+  return true;
+}
+
+function validSignUp(firstName, lastName, username, password) {
+  var firstNameE = (lastNameE = usernameE = passwordE = true);
+
+  if (firstName == "") {
+    console.log("First name blank");
+  } else {
+    console.log("First name valid");
+    firstNameE = false;
+  }
+
+  if (lastName == "") {
+    console.log("Last name blank");
+  } else {
+    console.log("Last name valid");
+    lastNameE = false;
+  }
+
+  if (username == "") {
+    console.log("Username blank");
+  } else {
+    var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
+
+    if (regex.test(username) == false) {
+      console.log("Username invalid");
+    } else {
+      console.log("Username valid");
+      usernameE = false;
+    }
+  }
+
+  if (password == "") {
+    console.log("Password blank");
+  } else {
+    var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
+
+    if (regex.test(password) == false) {
+      console.log("Password invalid");
+    } else {
+      console.log("Password valid");
+      passwordE = false;
+    }
+  }
+
+  if ((firstNameE || lastNameE || usernameE || passwordE) == true) {
+    return false;
+  }
+
+  return true;
+}
+
+function saveSession() {
+  console.log("Saving session..."); // Debugging
+
+  localStorage.setItem("firstName", firstName);
+  localStorage.setItem("lastName", lastName);
+  localStorage.setItem("userId", userId.toString());
+
+  console.log("Session Data Set:", localStorage);
+}
+
+function readSession() {
+  userId = localStorage.getItem("userId");
+  firstName = localStorage.getItem("firstName");
+  lastName = localStorage.getItem("lastName");
+
+  console.log("Reading session:", { userId, firstName, lastName }); // Debugging
+
+  // Ensure userId is a valid number before checking
+  userId = userId ? parseInt(userId, 10) : -1;
+
+  if (!userId || userId < 1) {
+    console.warn("Invalid user session! Redirecting to login.");
     window.location.href = "index.html";
+  } else {
+    document.getElementById("userName").innerHTML =
+      "Logged in as " + firstName + " " + lastName;
+  }
+}
+
+function doLogout() {
+  console.log("Logging out..."); // Debugging
+
+  // Clear session storage
+  localStorage.removeItem("firstName");
+  localStorage.removeItem("lastName");
+  localStorage.removeItem("userId");
+
+  console.log("Session cleared:", localStorage); // Debugging
+
+  // Redirect to login page
+  window.location.href = "index.html";
 }
