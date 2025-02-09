@@ -250,14 +250,14 @@ function displayContacts(contacts) {
     
             let editButton = document.createElement("button");
             editButton.classList.add("edit-btn");
-            editButton.textContent = "Edit";
+            editButton.innerHTML = `<img src="../images/edit.png" alt="Edit" class="button-icon">`;
             editButton.addEventListener("click", () =>
                 editContact(contactCard, contactDetails, editButton, saveButton, deleteButton, contact.ID)
             );
     
             let deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
-            deleteButton.textContent = "Delete";
+            deleteButton.innerHTML = `<img src="../images/delete.png" alt="Delete" class="button-icon">`;
             deleteButton.addEventListener("click", () =>
                 deleteContact(contactCard, contact.FirstName, contact.LastName)
             );
