@@ -326,7 +326,7 @@ table {
 }
 
 .edit-btn, .delete-btn {
-    background: #4CAF50;
+    background: cyan;
     color: white;
     border: none;
     padding: 6px;
@@ -336,7 +336,7 @@ table {
 }
 
 .delete-btn {
-    background: #E53935;
+    background: #FF1EA2;
 }
 
 /* Pagination Buttons */
