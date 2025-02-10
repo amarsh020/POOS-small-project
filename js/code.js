@@ -804,11 +804,7 @@ function addContact() {
 
   }
 
-
-
   userId = parseInt(userId, 10);
-
-
 
   let tmp = {
 
