@@ -772,7 +772,16 @@ function showTable() {
 
 }
 
-
+function checkVisible(form, formBool){
+  if(formBool == false){
+    form.style.display = "block";
+    form.style.visibility = "visible";
+  }
+  else {
+    form.style.visibility = "none";
+    form.style.display = "none";
+  }
+}
 
 function addContact() {
 
@@ -780,7 +789,13 @@ function addContact() {
 
   let form = document.getElementById("addContactForm");
 
+  let formFirst = document.getElementById("addTextFirst");
+  let formLast = document.getElementById("addTextLast");
+  let formPhone = document.getElementById("addTextPhone");
+  let formEmail = document.getElementById("addTextEmail");
 
+  let firstBool, lastBool, phoneBool, emailBool;
+  firstBool = lastBool = phoneBool = emailBool = true;
 
   let firstName = document.getElementById("contactTextFirst").value.trim();
 
@@ -792,19 +807,40 @@ function addContact() {
 
   let userId = localStorage.getItem("userId");
 
+  console.log("checking...");
+  retString = validEdit(firstName, lastName, phone, email);
 
+  if(retString != ""){
+    errors = retString.split(" ");
 
-  // Validate fields
+    for(let i = 0; i < errors.length; i++){
+      if(errors[i] == "FirstName"){
+        firstBool = false;
+      }
+      if(errors[i] == "LastName"){
+        lastBool = false;
+      }
+      if(errors[i] == "Email"){
+        emailBool = false;
+      }
+      if(errors[i] == "Phone"){
+        phoneBool = false;
+      }
+    }
 
-  if (!firstName || !lastName || !phone || !email) {
+    checkVisible(formFirst, firstBool);
+    checkVisible(formLast, lastBool);
+    checkVisible(formEmail, emailBool);
+    checkVisible(formPhone, phoneBool);
 
-    alert("Please fill in all fields.");
-
-    return;
-
+  return;
   }
 
+
+
   userId = parseInt(userId, 10);
+
+
 
   let tmp = {
 

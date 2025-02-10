@@ -207,11 +207,15 @@
         <div class="addContacts" id="addContactForm" style="display: none;">
             <form id="addMe" action="" method="post">
                 <input type="text" id="contactTextFirst" placeholder="First Name"required>
+                <span style="display: none;" id="addTextFirst">Invalid First Name</span>
                 <input type="text" id="contactTextLast" placeholder="Last Name" required>
+                <span style="display: none;" id="addTextLast">Invalid Last Name</span>
                 <input type="text" id="contactTextNumber" placeholder="XXX-XXX-XXXX" required
                     pattern="^(\d{3}-\d{3}-\d{4}|(\d{3}) \d{3}-\d{4}|\d{10})$">
+                <span style="display: none;" id="addTextPhone">Invalid Phone Number</span>
                 <input type="text" id="contactTextEmail" placeholder="name@email.com"
                     pattern="/^\S+@\S+\.\S+$/" required>
+                <span style="display: none;" id="addTextEmail">Invalid Email</span>
                 <button type="button" id="addContactButton" class="buttons" onclick="addContact();">
                     Add Contact
                 </button>
