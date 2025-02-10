@@ -44,6 +44,12 @@
         width: 300px;
       }
 
+      .input-container {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+
       .login-box input {
         display: block;
         margin: 10px auto;
@@ -52,6 +58,26 @@
         border: none;
         border-radius: 5px;
         font-size: 1rem;
+      }
+
+      .tooltip {
+        display: none;
+        position: absolute;
+        bottom: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 50, 0.9);
+        color: white;
+        padding: 8px;
+        border-radius: 5px;
+        font-size: 12px;
+        width: 220px;
+        text-align: left;
+        box-shadow: 0 0 10px cyan;
+      }
+
+      .input-container:hover .tooltip {
+        display: block;
       }
 
       .login-box button {
@@ -122,10 +148,29 @@
           <input type="text" id="lastName" name="lastname" placeholder="Last Name" required="required">
 
           <label for="username">Username</label>
-          <input type="text" id="signUpUsername" name="username" placeholder="Username" required="required">
+          <div class="input-container">
+            <input type="text" id="signUpUsername" name="username" placeholder="Username" required="required">
+            <div class="tooltip>
+              Username may contain:
+              <ul>
+                <li>4-19 characters</li>
+                <li>Numbers, hyphens, and underscores</li>
+              <ul>
+            </div>
+          </div>
 
           <label for="password">Password</label>
-          <input type="password" id="signUpPassword" name="password" placeholder="Password" required="required">
+          <div class="input-container">
+            <input type="password" id="signUpPassword" name="password" placeholder="Password" required="required">
+            <div class="tooltip>
+              Password must contain:
+              <ul>
+                <li>8-32 characters</li>
+                <li>At least 1 number</li>
+                <li>At least 1 special character</li>
+              <ul>
+            </div>
+          </div>
 
           <button type="button" onclick="doSignUp()">Sign Up</button>
           <span class="text" id="signUpResult"></span>
