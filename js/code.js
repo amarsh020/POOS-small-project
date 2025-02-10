@@ -250,16 +250,16 @@ function displayContacts(contacts) {
     
             let editButton = document.createElement("button");
             editButton.classList.add("edit-btn");
-            editButton.innerHTML = `<img src="../images/edit.png" alt="Edit" class="button-icon">`;
+			editButton.innerHTML = `<img src="../images/edit.png" alt="Edit" class="button-icon">`;
             editButton.addEventListener("click", () =>
-                editContact(contactCard, contactDetails, editButton, saveButton, deleteButton, contact.ID)
+                editContact(contactCard, contactDetails, editButton, contact.ID)
             );
     
             let deleteButton = document.createElement("button");
             deleteButton.classList.add("delete-btn");
-            deleteButton.innerHTML = `<img src="../images/delete.png" alt="Delete" class="button-icon">`;
+			deleteButton.innerHTML = `<img src="../images/delete.png" alt="Delete" class="button-icon">`;
             deleteButton.addEventListener("click", () =>
-                deleteContact(contactCard, contact.FirstName, contact.LastName)
+                deleteContact(contactCard, contact.FirstName, contact.LastName, contact.ID)
             );
     
             buttonsDiv.appendChild(editButton);
@@ -432,6 +432,95 @@ function addContact() {
   } catch (err) {
     console.error("Error adding contact:", err.message);
   }
+}
+
+function editContact(contactCard, contactDetails, editButton, contactID) {
+    let nameElements = contactDetails.getElementsByTagName("h3")[0];
+    let infoElements = contactDetails.getElementsByTagName("p");
+
+    let firstName = nameElements.textContent.split(" ")[0];
+    let lastName = nameElements.textContent.split(" ")[1];
+    let phone = infoElements[0].textContent;
+    let email = infoElements[1].textContent;
+
+    contactDetails.innerHTML = `
+        <input type="text" id="editFirstName" value="${firstName}">
+        <input type="text" id="editLastName" value="${lastName}">
+        <input type="text" id="editPhone" value="${phone}">
+        <input type="text" id="editEmail" value="${email}">
+    `;
+
+    editButton.innerHTML = `<img src="../images/save.png" alt="Save" class="button-icon">`;
+    editButton.onclick = function () {
+        saveContact(contactCard, contactID);
+    };
+}
+
+function saveContact(contactCard, contactID) {
+    let editedFirstName = document.getElementById("editFirstName").value.trim();
+    let editedLastName = document.getElementById("editLastName").value.trim();
+    let editedPhone = document.getElementById("editPhone").value.trim();
+    let editedEmail = document.getElementById("editEmail").value.trim();
+
+    let tmp = {
+        ContactId: contactID,
+        FirstName: editedFirstName,
+        LastName: editedLastName,
+        Phone: editedPhone,
+        Email: editedEmail
+    };
+
+    let jsonPayload = JSON.stringify(tmp);
+    let url = "/LAMPAPI/UpdateContact." + extension;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    try {
+        xhr.onreadystatechange = function () {
+			console.log("Save response status:", this.readyState, this.status);
+            if (this.readyState === 4 && this.status === 200) {
+                console.log("Contact updated successfully.");
+                loadContacts();
+            }
+        };
+        xhr.send(jsonPayload);
+    } catch (err) {
+        console.error("Error updating contact:", err.message);
+    }
+}
+
+function deleteContact(contactCard, firstName, lastName, contactID) {
+    if (!confirm(`Are you sure you want to delete ${firstName} ${lastName}?`)) {
+        return;
+    }
+
+    let tmp = { 
+		ContactId: contactID,
+		FirstName: firstName,
+		LastName: lastName
+	};
+
+    let jsonPayload = JSON.stringify(tmp);
+    let url = "/LAMPAPI/DeleteContact." + extension;
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+    try {
+        xhr.onreadystatechange = function () {
+			console.log("Delete response:", this.readyState, this.status);
+            if (this.readyState === 4 && this.status === 200) {
+                console.log("Contact deleted successfully.");
+                loadContacts();
+            }
+        };
+        xhr.send(jsonPayload);
+    } catch (err) {
+        console.error("Error deleting contact:", err.message);
+    }
 }
 
 function validLogin(logName, logPassword) {
