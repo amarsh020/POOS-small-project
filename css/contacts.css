@@ -10,15 +10,13 @@ body {
 
 /* Styling for the main content section */
 .content {
-    padding: 1px 16px;
+    margin-top: 60px;
+    padding: 20px;
     height: 1000px;
-    margin-top: 25px;
-    margin-left: 270px;
-    margin-right: 10px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    overflow: hidden; /* Prevents scrolling */
+    overflow: hidden; 
 }
 
 /* Styling for the div that displays logged-in user information */
@@ -261,7 +259,7 @@ table {
     color: #007D2F;
 }
 
-/* Contact Grid Layout - 3 rows x 4 columns */
+/* Contact Grid Layout */
 .contacts-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr); /* 4 columns */
@@ -280,18 +278,21 @@ table {
     color: white;
     border-radius: 8px;
     padding: 10px;
-    box-shadow: 0 0 10px cyan;
     display: flex;
+    flex-direction: row;
+    box-shadow: 0 0 10px cyan;
+    width: 300px;
+    height: 100px;
     align-items: center;
     justify-content: space-between;
-    width: 220px;
+    gap: 10px;
 }
 
 /* Profile Initials */
 .initials {
     width: 50px;
     height: 50px;
-    background: #4CAF50;
+    background:rgb(70, 19, 128);
     color: white;
     font-weight: bold;
     font-size: 18px;
@@ -299,6 +300,7 @@ table {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 /* Contact Details */
@@ -324,6 +326,7 @@ table {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width:40px;
 }
 
 .edit-btn, .delete-btn {
@@ -342,6 +345,7 @@ table {
 
 /* Pagination Buttons */
 .pagination {
+    margin: 0 auto;
     text-align: center;
     margin-top: 15px;
 }
@@ -369,17 +373,16 @@ table {
 
 
 #addContactForm {
-    position: fixed; /* Make sure it's above other content */
-    top: 50%; /* Center it vertically */
-    left: 50%; /* Center it horizontally */
-    transform: translate(-50%, -50%); /* Adjust for perfect centering */
-    background: rgba(255, 255, 255, 0.95); /* Light background */
+    position: fixed;
+    top: 50%; 
+    left: 50%;
+    transform: translate(-50%, -50%); 
+    background: rgba(255, 255, 255, 0.95); 
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for visibility */
-    z-index: 9999; /* Make sure it's on top of everything */
-    display: none; /* Keep it hidden until shown */
-    width: 350px; /* Adjust width */
-    max-width: 90%; /* Prevent it from getting too large */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
+    z-index: 9999; 
+    display: none; 
+    width: 350px;
+    max-width: 90%;
 }
-
