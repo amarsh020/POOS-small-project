@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <title>Members Page</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="css/members.css" />
+
+    <!-- Link to external JavaScript file -->
+    <script type="text/javascript" src="js/code.js"></script>
+
+    <!-- Import fonts from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+
+    <!-- Import FontAwesome icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+    <!-- Import jQuery and Bootstrap -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+</head>
+
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav class="topnav">
+        <img id="logo" src="images/icon.png" alt="logo image">
+        <a href="contacts.html">Contacts</a>
+        <a href="members.html">About Us</a>
+        <button type="button" id="logoutButton" onclick="doLogout();">Logout</button>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="content">
+        <!-- Displays logged-in user information -->
+        <div class="loggedInDiv">
+            <span style="color:#ffffff" id="userName"></span><br />
+        </div>
+
+        <h2 class="page-title">Meet The Developers</h2>
+
+        <!-- Members Grid -->
+        <div class="grid-container">
+            <div class="grid-item"><img src="images/nabz.png"><br>Nabeeha</div>
+            <div class="grid-item"><img src="images/max.png" onclick="window.open(`https://github.com/Max-Grabov`, `_blank`)"><br>Max</div>
+            <div class="grid-item"><img src="images/amoy.png"><br>Amoy</div>
+            <div class="grid-item"><img src="images/raudy.png"><br>Raudy</div>
+            <div class="grid-item"><img src="images/hyugo.png"><br>Hyugo</div>
+        </div>
+    </div>
+
+</body>
+
+</html>
