@@ -143,14 +143,23 @@
         <form method="post">
           <label for="firstname">First Name</label>
           <input type="text" id="firstName" name="firstname" placeholder="First Name" required="required">
+          <span class="text br" id="fNameWarning"></span>
+
+          <br>
+          <br>
 
           <label for="lastname">Last Name</label>
           <input type="text" id="lastName" name="lastname" placeholder="Last Name" required="required">
+          <span class="text" id="lNameWarning"></span>
+
+          <br>
+          <br>
 
           <label for="username">Username</label>
           <div class="input-container">
             <input type="text" id="signUpUsername" name="username" placeholder="Username" required="required">
-            <div class="tooltip>
+            <span class="text" id="uNameWarning"></span>
+            <div class="tooltip">
               Username may contain:
               <ul>
                 <li>4-19 characters</li>
@@ -159,10 +168,14 @@
             </div>
           </div>
 
+          <br>
+          <br>
+
           <label for="password">Password</label>
           <div class="input-container">
             <input type="password" id="signUpPassword" name="password" placeholder="Password" required="required">
-            <div class="tooltip>
+            <span class="text" id="passwordWarning"></span>
+            <div class="tooltip">
               Password must contain:
               <ul>
                 <li>8-32 characters</li>
@@ -171,6 +184,9 @@
               <ul>
             </div>
           </div>
+
+          <br>
+          <br>
 
           <button type="button" onclick="doSignUp()">Sign Up</button>
           <span class="text" id="signUpResult"></span>
@@ -196,3 +212,4 @@
     </script>
   </body>
 </html>
+
