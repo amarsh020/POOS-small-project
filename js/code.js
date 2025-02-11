@@ -159,24 +159,66 @@ function doSignUp() {
   let password = document.getElementById("signUpPassword").value;
 
 
+  let errorsFName = document.getElementById("fNameWarning");
+  let errorsLName = document.getElementById("lNameWarning");
+  let errorsUName = document.getElementById("uNameWarning");
+  let errorsPassword = document.getElementById("passwordWarning");
+  
+  let errorsSignUp = validSignUp(firstName, lastName, username, password);
+  //let errorResult = document.getElementById("signUpResult");
 
-  if (validSignUp(firstName, lastName, username, password) == false) {
+  //errorResult.textContent = "";
+  //checking blocks
 
-    document.getElementById("signUpResult").innerHTML = "Sign up invalid";
+  errorsFName.textContent = "";
+  errorsLName.textContent = "";
+  errorsUName.textContent = "";
+  errorsPassword.textContent = "";
+
+  if(errorsSignUp[0] == true || errorsSignUp[1] == true || errorsSignUp[2] == true 
+    ||errorsSignUp[3] == true || errorsSignUp[4] == true || errorsSignUp[5] == true
+    ){
+
+    if(errorsSignUp[0] == true){
+
+      errorsFName.textContent = "First name shouldn't be blank.\n";
+    }
+
+    if(errorsSignUp[1] == true){
+
+      errorsLName.textContent = "Last name shouldn't be blank.\n";
+    }
+
+    if(errorsSignUp[2] == true){
+
+      errorsUName.textContent = "Username shouldn't be blank.";
+    }
+
+    if(errorsSignUp[3] == true){
+
+      errorsUName.textContent += "\nUsername doesn't meet requirements";
+    }
+
+    if(errorsSignUp[4] == true){
+
+      errorsPassword.textContent = "\nPassword shouldn't be blank";
+    }
+
+    if(errorsSignUp[5] == true){
+
+      errorsPassword.textContent += "\nPassword doesn't meet requirements";
+    }
 
     return;
-
   }
-
-
 
   var hash = md5(password);
 
-
-
-  document.getElementById("signUpResult").innerHTML = "";
-
-
+  //document.getElementById("signUpResult").innerHTML = "";
+  errorsFName.textContent = "";
+  errorsLName.textContent = "";
+  errorsUName.textContent = "";
+  errorsPassword.textContent = "";
 
   let tmp = {
 
@@ -1130,100 +1172,76 @@ function validLogin(logName, logPassword) {
 
 function validSignUp(firstName, lastName, username, password) {
 
-  var firstNameE = (lastNameE = usernameE = passwordE = true);
+ //var firstNameE = (lastNameE = usernameE = passwordE = true);
+
+ let errorArray = [true, true, true, true, true, true];
+ // 0 - first name - blank
+ // 1 - last name - blank
+ // 2 - username - blank
+ // 3 - username - requirements
+ // 4 - password - blank
+ // 5 - password - requirements
+
+ if (firstName == "") {
+
+   console.log("First name blank");
+ } else {
+   console.log("First name valid");
+   errorArray[0] = false;
+ }
+
+ if (lastName == "") {
+
+   console.log("Last name blank");
+ } else {
+   console.log("Last name valid");
+   errorArray[1] = false;
+ }
+
+ if (username == "") {
+
+   console.log("Username blank");
+ } else {
+   var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
+
+   if (regex.test(username) == false) {
+     console.log("Username invalid");
+   } else {
+     
+     console.log("Username valid");
+     errorArray[3] = false;
+   }
+
+   errorArray[2] = false;
+ }
+
+ if (password == "") {
+   
+   console.log("Password blank");
+ } else {
+   var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
+
+   if (regex.test(password) == false) {
+
+     console.log("Password invalid");
+   } else {
+     console.log("Password valid");
+     errorArray[5] = false;
+   }
+
+   errorArray[4] = false;
+ }
 
 
+ // if ((firstNameE || lastNameE || usernameE || passwordE) == true) {
+ //   //return false;
+ //   return 0;
+ // }
 
-  if (firstName == "") {
+ // //return true;
+ // return 1;
 
-    console.log("First name blank");
-
-  } else {
-
-    console.log("First name valid");
-
-    firstNameE = false;
-
-  }
-
-
-
-  if (lastName == "") {
-
-    console.log("Last name blank");
-
-  } else {
-
-    console.log("Last name valid");
-
-    lastNameE = false;
-
-  }
-
-
-
-  if (username == "") {
-
-    console.log("Username blank");
-
-  } else {
-
-    var regex = /(?=.*[a-zA-Z])([a-zA-Z0-9-_]).{3,18}$/;
-
-
-
-    if (regex.test(username) == false) {
-
-      console.log("Username invalid");
-
-    } else {
-
-      console.log("Username valid");
-
-      usernameE = false;
-
-    }
-
-  }
-
-
-
-  if (password == "") {
-
-    console.log("Password blank");
-
-  } else {
-
-    var regex = /(?=.*\d)(?=.*[A-Za-z])(?=.*[!@#$%^&*]).{8,32}/;
-
-
-
-    if (regex.test(password) == false) {
-
-      console.log("Password invalid");
-
-    } else {
-
-      console.log("Password valid");
-
-      passwordE = false;
-
-    }
-
-  }
-
-
-
-  if ((firstNameE || lastNameE || usernameE || passwordE) == true) {
-
-    return false;
-
-  }
-
-
-
-  return true;
-
+ return errorArray;
 }
 
 
