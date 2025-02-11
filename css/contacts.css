@@ -347,8 +347,9 @@ table {
 
 /* Pagination Buttons */
 .pagination {
-        margin: 0 auto;
-        text-align: center;
+        display: flex !important;
+        width: 100%;
+        justify-content: space-around;
         margin-top: 15px;
 }
 
